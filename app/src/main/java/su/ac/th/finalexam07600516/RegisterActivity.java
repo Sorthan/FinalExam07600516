@@ -9,53 +9,75 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import su.ac.th.finalexam07600516.UserDB.USER;
 import su.ac.th.finalexam07600516.UserDB.USERRepository;
+import su.ac.th.finalexam07600516.UserDB.USERDao;
 
-public class RegisterActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
-        onCreateUser();
+        setContentView(R.layout.activity_login);
+        onClickRegister();
+        onInputDataLogin();
     }
-
-    public void onCreateUser(){
-        Button registerSavebutton = findViewById(R.id.register_button);
-        registerSavebutton.setOnClickListener(new View.OnClickListener() {
+    public void onClickRegister(){
+        Button registerbutton = findViewById(R.id.register_button);
+        registerbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TextView Fullname = findViewById(R.id.full_name_edit_text);
+                Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    public void onInputDataLogin(){
+        Button loginbutton = findViewById(R.id.login_button);
+        loginbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 TextView Username = findViewById(R.id.username_edit_text);
                 TextView Password = findViewById(R.id.password_edit_text);
 
-                String full_name = Fullname.getText().toString();
                 String username = Username.getText().toString();
                 String password = Password.getText().toString();
 
-                if(full_name.length() == 0 || username.length() == 0 || password.length() == 0){
-                    Toast.makeText(RegisterActivity.this,"All fields are required",Toast.LENGTH_LONG).show();
+                if(username.length() == 0 || password.length() == 0){
+                    Toast.makeText(LoginActivity.this,"All fields are required",Toast.LENGTH_LONG).show();
                 }
                 else{
-                    USER NewUser = new USER(full_name,username,password);
-                    InsertUser(NewUser);
-                    Toast.makeText(RegisterActivity.this,"Register successfully",Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
-                    startActivity(intent);
+                    CheckingLoginDATA(username, password);
                 }
             }
         });
-
     }
 
-    private void InsertUser(USER user){
-        USERRepository checkRegister = new USERRepository(RegisterActivity.this);
-        checkRegister.insertUser(user, new USERRepository.InsertCallback() {
+    private void CheckingLoginDATA(final String username, final String password){
+        USERRepository checkworking = new USERRepository(LoginActivity.this);
+        final String[] fullnameEqualUsername = {""};
+        checkworking.getUser(new USERRepository.Callback() {
             @Override
-            public void onInsertSuccess() {
-                finish();
+            public void onGetLedger(List<USER> userList) {
+                int checkEqual = 0;
+                for(USER users : userList){
+                    if(username.equals(users.username) && password.equals(users.password)){
+                        checkEqual = 1;
+                        fullnameEqualUsername[0] = users.fullname;
+                        break;
+                    }
+                }
+                if(checkEqual == 1){
+                    Toast.makeText(LoginActivity.this,"Welcome "+ fullnameEqualUsername[0],Toast.LENGTH_LONG).show();
+                }
+                else if(checkEqual == 0){
+                    Toast.makeText(LoginActivity.this,"Invalid username or password",Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
 }
+

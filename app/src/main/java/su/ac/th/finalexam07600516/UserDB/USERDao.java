@@ -11,7 +11,9 @@ public interface USERDao {
     @Query("SELECT * FROM userdata")
     List<USER> getAllUser();
 
+    @Query("SELECT * FROM userdata where password")
+    List<USER> getALLPassword();
+
     @Insert
     void insertUser(USER user);
 }
-

@@ -9,6 +9,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
+import su.ac.th.finalexam07600516.UserDB.USER;
+import su.ac.th.finalexam07600516.UserDB.USERRepository;
+import su.ac.th.finalexam07600516.UserDB.USERDao;
+
 public class LoginActivity extends AppCompatActivity {
 
     @Override
@@ -44,7 +50,31 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this,"All fields are required",Toast.LENGTH_LONG).show();
                 }
                 else{
+                    CheckingLoginDATA(username, password);
+                }
+            }
+        });
+    }
 
+    private void CheckingLoginDATA(final String username, final String password){
+        USERRepository checkworking = new USERRepository(LoginActivity.this);
+        final String[] fullnameEqualUsername = {""};
+        checkworking.getUser(new USERRepository.Callback() {
+            @Override
+            public void onGetLedger(List<USER> userList) {
+                int checkEqual = 0;
+                for(USER users : userList){
+                    if(username.equals(users.username) && password.equals(users.password)){
+                        checkEqual = 1;
+                        fullnameEqualUsername[0] = users.fullname;
+                        break;
+                    }
+                }
+                if(checkEqual == 1){
+                    Toast.makeText(LoginActivity.this,"Welcome "+ fullnameEqualUsername[0],Toast.LENGTH_LONG).show();
+                }
+                else if(checkEqual == 0){
+                    Toast.makeText(LoginActivity.this,"Invalid username or password",Toast.LENGTH_LONG).show();
                 }
             }
         });

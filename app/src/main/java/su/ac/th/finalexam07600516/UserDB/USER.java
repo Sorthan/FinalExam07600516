@@ -24,4 +24,3 @@ public class USER {
         this.password = password;
     }
 }
-

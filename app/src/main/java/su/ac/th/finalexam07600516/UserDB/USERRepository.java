@@ -2,7 +2,6 @@ package su.ac.th.finalexam07600516.UserDB;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.service.autofill.UserData;
 
 import java.util.List;
 
@@ -36,8 +35,8 @@ public class USERRepository {
         @Override
         protected List<USER> doInBackground(Void... voids) {
             AppDatabase db = AppDatabase.getInstance(mContext);
-            List<USER> userList = db.userDao().getAllUser();
-            return userList;
+            List<USER> usernameList = db.userDao().getAllUser();
+            return usernameList;
         }
 
         @Override
